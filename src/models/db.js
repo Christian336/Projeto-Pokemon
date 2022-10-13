@@ -1,12 +1,4 @@
-//const Sequelize = require('sequelize')
-
-//Conexão com o banco de dados MySql
-/*
-const sequelize = new Sequelize('pokemonproject', 'root', '#C33630238c', {
-    host: "localhost",
-    dialect: 'mysql'
-})
-*/
+//Conexão com o Banco de Dados MSSQL Azure
 
 var Sequelize = require('sequelize');
 var sequelize = new Sequelize('Desafio-jz', 'DesafioAdmin', 'Picachu123', {

@@ -1,6 +1,8 @@
 const express = require('express')
-import { engine } from "express-handlebars"
-import Table from "./models/Table"
+//import { engine } from "express-handlebars"
+//const engine = require("express-handlebars")
+//import Table from "./models/Table"
+const Table = require("./models/Table")
 const bodyParser = require('body-parser')
 const Tabela = require('./models/Table')
 
@@ -9,9 +11,11 @@ const Tabela = require('./models/Table')
 const app = express()
 
 //Temple Engine
+/*
 app.engine('handlebars', engine())
 app.set('view engine', 'handlebars')
 app.set('views' , 'src/views')
+*/
 
 //Body Parser
 app.use(bodyParser.urlencoded({extended: false}))
@@ -22,11 +26,12 @@ app.use(bodyParser.json())
 //Rotas
 
 app.get("/", function(req,res){
-    res.render('index')
+    res.send( '<header><center><h1>BEM VINDO AO MEU PROJETO</h1></center></header><br><hr><br><section><center><h2>Autoria: Christian Soares Pereira dos Santos</h2></center></section>'
+  )
 })
 
 app.get("/POST/pokemons", function(req,res){
-    res.render('criar')
+    res.send(' <header><center><h1>CRIAR</h1></center></header><section><form method="POST" action="/POSTED"><center>tipo:<input type="text" name="tipo" id="tipo" required><br><br> treinador:<input type="text" name="treinador" id="treinador" required><br><br><button type="submit">Criar</button> </center></form></section>')
 })
 
 app.get("/PUT/pokemons/:id" , function(req,res){
