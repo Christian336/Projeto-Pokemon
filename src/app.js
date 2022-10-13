@@ -260,6 +260,7 @@ app.get('/POST/batalhar/:pokemonAId/:pokemonBId' , function(req,res){
 )
 
 //Servidor
-app.listen(8081, function(){
+const PORT = process.env.PORT || 8081
+app.listen(PORT, function(){
     console.log("Servidor Rodando na url http://localhost:8081")
 })

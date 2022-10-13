@@ -24,5 +24,14 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Christian336/Projeto-Pokemon.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Christian336/Projeto-Pokemon/issues"
+  },
+  "homepage": "https://github.com/Christian336/Projeto-Pokemon#readme",
   "description": ""
 }
