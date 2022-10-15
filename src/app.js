@@ -425,6 +425,7 @@ app.get("/POST/pokemonAId/pokemonBId", function(req, res){
 
 //Servidor
 const PORT = process.env.PORT || 8081
-app.listen(PORT, function(){
-    console.log("Servidor Rodando na url http://localhost:8081")
-})
+const HOST = '0.0.0.0';
+
+app.listen(PORT, HOST);
+console.log('Rodando no endereco http://localhost:8081')

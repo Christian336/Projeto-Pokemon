@@ -17,7 +17,9 @@ var sequelize = new Sequelize('Desafio-jz', 'DesafioAdmin', 'Picachu123', {
 
 
 
+
+
 module.exports={
     Sequelize: Sequelize,
-    sequelize: sequelize
+    sequelize: sequelize,
 }
