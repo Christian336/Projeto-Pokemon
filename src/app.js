@@ -1,21 +1,20 @@
+const fs = require('fs')
 const express = require('express')
-//import { engine } from "express-handlebars"
-//const engine = require("express-handlebars")
-//import Table from "./models/Table"
-const Table = require("./models/Table")
+const engine = require("express-handlebars")
 const bodyParser = require('body-parser')
-const Tabela = require('./models/Table')
+const Tabela = require('./models/Table.js')
+
 
 
 //App
 const app = express()
 
 //Temple Engine
-/*
-app.engine('handlebars', engine())
+
+app.engine('handlebars', engine.engine())
 app.set('view engine', 'handlebars')
 app.set('views' , 'src/views')
-*/
+
 
 //Body Parser
 app.use(bodyParser.urlencoded({extended: false}))
@@ -26,11 +25,11 @@ app.use(bodyParser.json())
 //Rotas
 
 app.get("/", function(req,res){
-    res.sendFile(__dirname+'/views/index.html')
+    res.render('index')
 })
 
 app.get("/POST/pokemons", function(req,res){
-    res.send(' <header><center><h1>CRIAR</h1></center></header><section><form method="POST" action="/POSTED"><center>tipo:<input type="text" autocomplete="off" name="tipo" id="tipo" required><br><br> treinador:<input type="text" autocomplete="off"  name="treinador" id="treinador" required><br><br><button type="submit">Criar</button> </center></form></section>')
+    res.render('criar')
 })
 
 app.get("/PUT/pokemons/:id" , function(req,res){
@@ -63,8 +62,8 @@ app.post("/PUT/pokemons/id" , function(req,res){
     })
 })
 
-app.get("/PUT/id" , function(req,res){
-    res.sendFile(__dirname+'/views/idA.html')
+app.get("/PUT/pokemons" , function(req,res){
+    res.render('alterar')
 })
 
 
@@ -87,8 +86,8 @@ app.post("/DELETE/pokemons/id", function(req,res){
     })
 })
 
-app.get("/DELETE/id" , function(req,res){
-    res.sendFile(__dirname+"/views/idD.html")
+app.get("/DELETE/pokemons" , function(req,res){
+    res.render("deletar")
 })
 
 
@@ -118,8 +117,8 @@ app.post("/GET/pokemons/id" , function(req,res){
     })
 })
 
-app.get("/GET/id" , function(req,res){
-    res.sendFile(__dirname+"/views/idC.html")
+app.get("/GET/pokemon" , function(req,res){
+    res.render("carregar")
 })
 
 app.get("/GET/pokemons", function(req,res){
@@ -187,9 +186,8 @@ app.post('/PUTED' , function(req,res){
     var id = req.body.id
     
     var nome = req.body.treinador
- 
 
-    Table.update({treinador : nome},{
+    Tabela.update({treinador : nome},{
         where:{
             id: id
         }
@@ -199,7 +197,10 @@ app.post('/PUTED' , function(req,res){
     res.send('<center><h1>Dados alterados com sucesso!!!</h1></center><center><p><a href="/"><button style="background: red; border-radius: 6px; padding: 15px; cursor: pointer; color: white; border: none; font-size: 16px;">VOLTAR PARA PAGINA INICIAL</button></a></p></center>')
     }).catch(function(erro){
         res.send('Ocorreu um erro: '+erro+'<center><p><a href="/"><button style="background: red; border-radius: 6px; padding: 15px; cursor: pointer; color: white; border: none; font-size: 16px;">VOLTAR PARA PAGINA INICIAL</button></a></p></center>')
-    })})
+    })
+}
+ 
+)
 
 app.get('/POST/batalhar/:pokemonAId/:pokemonBId' , function(req,res){
     var AId = req.params.pokemonAId
@@ -249,7 +250,7 @@ app.get('/POST/batalhar/:pokemonAId/:pokemonBId' , function(req,res){
         Anivel++
         Bnivel--
 
-        Table.update({nivel : Anivel},{
+        Tabela.update({nivel : Anivel},{
             where:{
                 id: AId
             }
@@ -262,7 +263,7 @@ app.get('/POST/batalhar/:pokemonAId/:pokemonBId' , function(req,res){
             Tabela.destroy({where: {id: BId}})
         }else{
             loserstatus = '//Desceu de nivel'
-            Table.update({nivel : Bnivel},{
+            Tabela.update({nivel : Bnivel},{
                 where:{
                     id: BId
                 }
@@ -278,7 +279,7 @@ app.get('/POST/batalhar/:pokemonAId/:pokemonBId' , function(req,res){
         Bnivel++
         Anivel--
 
-        Table.update({nivel : Bnivel},{
+        Tabela.update({nivel : Bnivel},{
             where:{
                 id: BId
             }
@@ -291,7 +292,7 @@ app.get('/POST/batalhar/:pokemonAId/:pokemonBId' , function(req,res){
             Tabela.destroy({where: {id: AId}})
         }else{
             loserstatus = '//Desceu de nivel'
-            Table.update({nivel : Anivel},{
+            Tabela.update({nivel : Anivel},{
                 where:{
                     id: AId
                 }
@@ -357,7 +358,7 @@ app.post('/POST/batalhar/pokemonAId/pokemonBId' , function(req,res){
         Anivel++
         Bnivel--
 
-        Table.update({nivel : Anivel},{
+        Tabela.update({nivel : Anivel},{
             where:{
                 id: AId
             }
@@ -370,7 +371,7 @@ app.post('/POST/batalhar/pokemonAId/pokemonBId' , function(req,res){
             Tabela.destroy({where: {id: BId}})
         }else{
             loserstatus = '//Desceu de nivel'
-            Table.update({nivel : Bnivel},{
+            Tabela.update({nivel : Bnivel},{
                 where:{
                     id: BId
                 }
@@ -386,7 +387,7 @@ app.post('/POST/batalhar/pokemonAId/pokemonBId' , function(req,res){
         Bnivel++
         Anivel--
 
-        Table.update({nivel : Bnivel},{
+        Tabela.update({nivel : Bnivel},{
             where:{
                 id: BId
             }
@@ -399,7 +400,7 @@ app.post('/POST/batalhar/pokemonAId/pokemonBId' , function(req,res){
             Tabela.destroy({where: {id: AId}})
         }else{
             loserstatus = '//Desceu de nivel'
-            Table.update({nivel : Anivel},{
+            Tabela.update({nivel : Anivel},{
                 where:{
                     id: AId
                 }
@@ -417,8 +418,8 @@ app.post('/POST/batalhar/pokemonAId/pokemonBId' , function(req,res){
     
 )
 
-app.get("/POST/pokemonAId/pokemonBId", function(req, res){
-    res.sendFile(__dirname+"/views/idB.html")
+app.get("/POST/batalhar", function(req, res){
+    res.render("batalhar")
 })
 
 

@@ -8,11 +8,10 @@
 </head>
 <body>
     <center>
-        <h3>Digite os Ids dos pokémons que irão batalhar:</h3>
+        <header><h1>ALTERAR</h1></header>
 
-        <form action="/POST/batalhar/pokemonAId/pokemonBId"  method="post">
-           Id primeiro pokémon:<input type="text" name="pokemonAId" id="pokemonAId" autocomplete="off"><br><br>
-           Id segundo pokémon:<input type="text" name="pokemonBId" id="pokemonBId" autocomplete="off">
+        <form action="/PUT/pokemons/id"  method="post">
+            id: <input type="text" name="id" id="id" autocomplete="off"><br><br>
             <button type="submit">Enviar</button>
         </form>
     </center>

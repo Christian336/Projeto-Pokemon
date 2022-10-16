@@ -8,10 +8,11 @@
 </head>
 <body>
     <center>
-        <h3>Digite o Id do pokémon o qual deseja alterar o treinador:</h3>
+        <header><h1>BATALHAR</h1></header>
 
-        <form action="/PUT/pokemons/id"  method="post">
-            <input type="text" name="id" id="id" autocomplete="off">
+        <form action="/POST/batalhar/pokemonAId/pokemonBId"  method="post">
+           Id primeiro pokémon:<input type="text" name="pokemonAId" id="pokemonAId" autocomplete="off"><br><br>
+           Id segundo pokémon:<input type="text" name="pokemonBId" id="pokemonBId" autocomplete="off"><br><br>
             <button type="submit">Enviar</button>
         </form>
     </center>
