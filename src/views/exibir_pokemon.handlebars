@@ -1,0 +1,29 @@
+<style>
+    b{
+        color: white;
+    }
+
+    div{
+     color: red;
+  border: 3px solid red;
+  background: black;
+    }
+</style>
+
+<center><header><h1>DADOS DO POKÉMON</h1></header>
+{{#each pokemon}}
+<div>
+    <h2>{{status}}</h2>
+<ul>
+    <li><b>id:</b> {{id}}</li>
+<li><b>tipo:</b> {{tipo}}</li>
+<li><b>treinador:</b> {{treinador}}</li>
+<li><b>nivel:</b> {{nivel}} {{evolution}}</li>
+</ul>
+<br>
+</div>
+
+
+{{/each}}
+    <p><a href="/"><button >VOLTAR PARA PÁGINA INICIAL</button></a></p>
+   </center>

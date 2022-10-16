@@ -1,4 +1,3 @@
-const fs = require('fs')
 const express = require('express')
 const engine = require("express-handlebars")
 const bodyParser = require('body-parser')
@@ -38,14 +37,14 @@ app.get("/PUT/pokemons/:id" , function(req,res){
 
     Tabela.findByPk(id)
     .then(data =>{
-        res.send('<header><center><h1>ALTERAR</h1></center></header><form action="/PUTED" method="POST" ><center><p>id:'+data["id"]+'</p><p id="treinador">Nome atual do treinador: '+data["treinador"]+'</p>Novo nome do treinador: <input type="text" autocomplete="off"  name="treinador" id="treinador" required><br><br><p hidden><input type=text value="'+data["id"]+'" name="id" id="id"></p><button type="submit">Alterar</button></center></form>')
+        res.render('alterar2', {id:data["id"], treinador:data["treinador"]})
+       
     }).catch(err =>{
-        res.status(500).send({
-            message:
-            err.message || "some error"
-        })
+        res.render('erro', {erro: err})
     })
 })
+
+
 
 app.post("/PUT/pokemons/id" , function(req,res){
 
@@ -53,12 +52,10 @@ app.post("/PUT/pokemons/id" , function(req,res){
 
     Tabela.findByPk(id)
     .then(data =>{
-        res.send('<header><center><h1>ALTERAR</h1></center></header><form action="/PUTED" method="POST" ><center><p>id:'+data["id"]+'</p><p id="treinador">Nome atual do treinador: '+data["treinador"]+'</p>Novo nome do treinador: <input type="text" autocomplete="off" name="treinador" id="treinador" required><br><br><p hidden><input type=text value="'+data["id"]+'" name="id" id="id"></p><button type="submit">Alterar</button></center></form>')
+        res.render('alterar2', {id:data["id"], treinador:data["treinador"]})
+       
     }).catch(err =>{
-        res.status(500).send({
-            message:
-            err.message || "some error"
-        })
+        res.render('erro', {erro: err})
     })
 })
 
@@ -71,7 +68,8 @@ app.get("/PUT/pokemons" , function(req,res){
 app.get("/DELETE/pokemons/:id", function(req,res){
 
     Tabela.destroy({where: {'id': req.params.id}}).then(function(){
-        res.send('<center><h1>Pokemon deletado com sucesso!!!</h1></center><center><p><a href="/"><button style="background: red; border-radius: 6px; padding: 15px; cursor: pointer; color: white; border: none; font-size: 16px;">VOLTAR PARA PAGINA INICIAL</button></a></p></center>')
+        res.render('operacao')
+        
     
        
     })
@@ -80,9 +78,10 @@ app.get("/DELETE/pokemons/:id", function(req,res){
 app.post("/DELETE/pokemons/id", function(req,res){
 
     Tabela.destroy({where: {'id': req.body.id}}).then(function(){
-        res.send('<center><h1>Pokemon deletado com sucesso!!!</h1></center><center><p><a href="/"><button style="background: red; border-radius: 6px; padding: 15px; cursor: pointer; color: white; border: none; font-size: 16px;">VOLTAR PARA PAGINA INICIAL</button></a></p></center>')
-    
+        res.render('operacao')
        
+    }).catch(function(erro){
+        res.render('erro', {erro:erro})
     })
 })
 
@@ -93,14 +92,13 @@ app.get("/DELETE/pokemons" , function(req,res){
 
 app.get("/GET/pokemons/:id" , function(req,res){
     var id = req.params.id
+
     Tabela.findByPk(id)
     .then(data =>{
-        res.send('<center><h1>Carregar</h1><hr>id: '+data["id"]+'<br>tipo: '+data["tipo"]+'<br>treinador: '+data["treinador"]+'<br>nivel: '+data["nivel"]+'<center><p><a href="/"><button style="background: red; border-radius: 6px; padding: 15px; cursor: pointer; color: white; border: none; font-size: 16px;">VOLTAR PARA PAGINA INICIAL</button></a></p></center></center><hr>')
+        res.render('exibir_pokemon' , {pokemon : [{id: data["id"], tipo: data["tipo"], treinador: data["treinador"], nivel: data["nivel"]}]})
+        
     }).catch(err =>{
-        res.status(500).send({
-            message:
-            err.message || "some error"
-        })
+        res.render('erro', {erro: err})
     })
 })
 
@@ -108,12 +106,10 @@ app.post("/GET/pokemons/id" , function(req,res){
     var id = req.body.id
     Tabela.findByPk(id)
     .then(data =>{
-        res.send('<center><h1>Carregar</h1><hr>id: '+data["id"]+'<br>tipo: '+data["tipo"]+'<br>treinador: '+data["treinador"]+'<br>nivel: '+data["nivel"]+'<center><p><a href="/"><button style="background: red; border-radius: 6px; padding: 15px; cursor: pointer; color: white; border: none; font-size: 16px;">VOLTAR PARA PAGINA INICIAL</button></a></p></center></center><hr>')
+        res.render('exibir_pokemon' , {pokemon : [{id: data["id"], tipo: data["tipo"], treinador: data["treinador"], nivel: data["nivel"]}]})
+        
     }).catch(err =>{
-        res.status(500).send({
-            message:
-            err.message || "some error"
-        })
+        res.render('erro', {erro: err})
     })
 })
 
@@ -125,19 +121,24 @@ app.get("/GET/pokemons", function(req,res){
     Tabela.findAll()
     .then(
         data =>{
-           var list = ''
-           for(var i=0; i < data.length; i++)
-           list+="id: "+data[i]["id"]+"<br>tipo: "+data[i]["tipo"]+"<br>treinador: "+data[i]["treinador"]+"<br>nivel: "+data[i]["nivel"]+"<hr>"
-
-            res.send('<center><h1>Listar</h1><hr>'+list+'</center><center><p><a href="/"><button style="background: red; border-radius: 6px; padding: 15px; cursor: pointer; color: white; border: none; font-size: 16px;">VOLTAR PARA PAGINA INICIAL</button></a></p></center>');
+           var pokemon = []
+          
+           for(var i=0; i < data.length; i++){
+            pokemon.push({
+                id: data[i]["id"],
+                tipo: data[i]["tipo"],
+                treinador: data[i]["treinador"],
+                nivel: data[i]["nivel"]
+            })
+    
+}
+           res.render('exibir_pokemon' , {pokemon:pokemon})
+           
         }
         
     )
     .catch(err =>{
-        res.status(500).send({
-            message:
-            err.message || "some error"
-        })
+        res.render('erro', {erro: err})
     })
   
 })
@@ -157,25 +158,21 @@ app.post("/POSTED", function(req,res){
                 Tabela.findAll()
                 .then(
             
-                    
-            
                     data =>{
                       
                        for(var i=0; i < data.length; i++){
                         pkid=data[i]["id"]
                        }
-                       res.send('<center><h1>Pokemon criado com sucesso!!!</h1>id: '+pkid+'<br><br>tipo: '+req.body.tipo+'<br><br>treinador: '+req.body.treinador+'<br><br>nivel: 1<p><a href="/"><button style="background: red; border-radius: 6px; padding: 15px; cursor: pointer; color: white; border: none; font-size: 16px;">VOLTAR PARA PAGINA INICIAL</button></a></p></center>')
-                    }
-                    
+                       res.render('exibir_pokemon' , {pokemon : [{id: pkid, tipo: req.body.tipo, treinador: req.body.treinador, nivel: 1}]})   
+                    }   
                 )
            
      }).catch(function(erro){
-         res.send('Ocorreu um erro: '+erro+'<center><p><a href="/"><button style="background: red; border-radius: 6px; padding: 15px; cursor: pointer; color: white; border: none; font-size: 16px;">VOLTAR PARA PAGINA INICIAL</button></a></p></center>')
+         res.render('erro', {erro: erro})
      })}
          else{
              var errou = new Error("Tipo de pokemon inválido!!!")
-             res.send('<center><h1>Nao foi possivel criar o pokemon!!!</h1>'+errou+'<center><p><a href="/"><button style="background: red; border-radius: 6px; padding: 15px; cursor: pointer; color: white; border: none; font-size: 16px;">VOLTAR PARA PAGINA INICIAL</button></a></p></center></center>')
-           
+             res.render('erro', {erro: errou})
          }
 
    
@@ -193,10 +190,10 @@ app.post('/PUTED' , function(req,res){
         }
     })
     .then(() =>{
-        
-    res.send('<center><h1>Dados alterados com sucesso!!!</h1></center><center><p><a href="/"><button style="background: red; border-radius: 6px; padding: 15px; cursor: pointer; color: white; border: none; font-size: 16px;">VOLTAR PARA PAGINA INICIAL</button></a></p></center>')
+        res.render('operacao')
+   
     }).catch(function(erro){
-        res.send('Ocorreu um erro: '+erro+'<center><p><a href="/"><button style="background: red; border-radius: 6px; padding: 15px; cursor: pointer; color: white; border: none; font-size: 16px;">VOLTAR PARA PAGINA INICIAL</button></a></p></center>')
+        res.render('erro', {erro: erro})
     })
 }
  
@@ -230,7 +227,8 @@ app.get('/POST/batalhar/:pokemonAId/:pokemonBId' , function(req,res){
         }
 
         if(Anivel == null || Bnivel == null){
-            res.send('<center>Foram passados um ou mais ids invalidos!!!</center><center><p><a href="/"><button style="background: red; border-radius: 6px; padding: 15px; cursor: pointer; color: white; border: none; font-size: 16px;">VOLTAR PARA PAGINA INICIAL</button></a></p></center>')
+            var erro = new Error("Foram passados um ou mais ids invalidos!")
+            res.render('erro', {erro: erro})
        }
 
        else{
@@ -270,10 +268,8 @@ app.get('/POST/batalhar/:pokemonAId/:pokemonBId' , function(req,res){
             })
         }
 
-        var pkA = '<p>id: '+AId+'</p>tipo: '+Atipo+'</p>treinador: '+Atreinador+'</p>nivel: '+Anivel
-    var pkB = '<p>id: '+BId+'</p>tipo: '+Btipo+'</p>treinador: '+Btreinador+'</p>nivel: '+Bnivel
-
-    res.send('<center><h1>Vencedor:</h1>'+pkA+'//Subiu de nivel<h1>Perdedor:</h1>'+pkB+loserstatus+'</center><center><p><a href="/"><button style="background: red; border-radius: 6px; padding: 15px; cursor: pointer; color: white; border: none; font-size: 16px;">VOLTAR PARA PAGINA INICIAL</button></a></p></center>')
+    res.render('exibir_pokemon', {pokemon: [{status: "Vencedor", id: AId, tipo: Atipo, treinador: Atreinador, nivel: Anivel, evolution: "//Subiu de nível"},
+    {status: "Perdedor", id: BId, tipo: Btipo, treinador: Btreinador, nivel: Bnivel, evolution: loserstatus}]})
 
     }else{
         Bnivel++
@@ -299,10 +295,9 @@ app.get('/POST/batalhar/:pokemonAId/:pokemonBId' , function(req,res){
             })
         }
 
-        var pkA = '<p>id: '+AId+'</p>tipo: '+Atipo+'</p>treinador: '+Atreinador+'</p>nivel: '+Anivel
-    var pkB = '<p>id: '+BId+'</p>tipo: '+Btipo+'</p>treinador: '+Btreinador+'</p>nivel: '+Bnivel
+    res.render('exibir_pokemon', {pokemon: [{status: "Vencedor", id: BId, tipo: Btipo, treinador: Btreinador, nivel: Bnivel, evolution: "//Subiu de nível"}, 
+    {status: "Perdedor", id: AId, tipo: Atipo, treinador: Atreinador, nivel: Anivel, evolution: loserstatus}]})
 
-    res.send('<center><h1>Vencedor:</h1>'+pkB+'//Subiu de nivel<h1>Perdedor:</h1>'+pkA+loserstatus+'</center><center><p><a href="/"><button style="background: red; border-radius: 6px; padding: 15px; cursor: pointer; color: white; border: none; font-size: 16px;">VOLTAR PARA PAGINA INICIAL</button></a></p></center>') 
     }
 
     }})
@@ -338,7 +333,8 @@ app.post('/POST/batalhar/pokemonAId/pokemonBId' , function(req,res){
         }
 
         if(Anivel == null || Bnivel == null){
-            res.send('<center>Foram passados um ou mais ids invalidos!!!</center><center><p><a href="/"><button style="background: red; border-radius: 6px; padding: 15px; cursor: pointer; color: white; border: none; font-size: 16px;">VOLTAR PARA PAGINA INICIAL</button></a></p></center>')
+            var erro = new Error("Foram passados um ou mais ids invalidos!")
+            res.render('erro', {erro: erro})
        }
 
        else{
@@ -378,10 +374,8 @@ app.post('/POST/batalhar/pokemonAId/pokemonBId' , function(req,res){
             })
         }
 
-        var pkA = '<p>id: '+AId+'</p>tipo: '+Atipo+'</p>treinador: '+Atreinador+'</p>nivel: '+Anivel
-    var pkB = '<p>id: '+BId+'</p>tipo: '+Btipo+'</p>treinador: '+Btreinador+'</p>nivel: '+Bnivel
-
-    res.send('<center><h1>Vencedor:</h1>'+pkA+'//Subiu de nivel<h1>Perdedor:</h1>'+pkB+loserstatus+'</center><center><p><a href="/"><button style="background: red; border-radius: 6px; padding: 15px; cursor: pointer; color: white; border: none; font-size: 16px;">VOLTAR PARA PAGINA INICIAL</button></a></p></center>')
+        res.render('exibir_pokemon', {pokemon: [{status: "Vencedor", id: AId, tipo: Atipo, treinador: Atreinador, nivel: Anivel, evolution: "//Subiu de nível"},
+        {status: "Perdedor", id: BId, tipo: Btipo, treinador: Btreinador, nivel: Bnivel, evolution: loserstatus}]})
 
     }else{
         Bnivel++
@@ -406,14 +400,12 @@ app.post('/POST/batalhar/pokemonAId/pokemonBId' , function(req,res){
                 }
             })
         }
+    res.render('exibir_pokemon', {pokemon: [{status: "Vencedor", id: BId, tipo: Btipo, treinador: Btreinador, nivel: Bnivel, evolution: "//Subiu de nível"}, 
+    {status: "Perdedor", id: AId, tipo: Atipo, treinador: Atreinador, nivel: Anivel, evolution: loserstatus}]})
 
-        var pkA = '<p>id: '+AId+'</p>tipo: '+Atipo+'</p>treinador: '+Atreinador+'</p>nivel: '+Anivel
-    var pkB = '<p>id: '+BId+'</p>tipo: '+Btipo+'</p>treinador: '+Btreinador+'</p>nivel: '+Bnivel
-
-    res.send('<center><h1>Vencedor:</h1>'+pkB+'//Subiu de nivel<h1>Perdedor:</h1>'+pkA+loserstatus+'</center><center><p><a href="/"><button style="background: red; border-radius: 6px; padding: 15px; cursor: pointer; color: white; border: none; font-size: 16px;">VOLTAR PARA PAGINA INICIAL</button></a></p></center>') 
     }
-
-    }})
+    }
+})
     }
     
 )
@@ -421,8 +413,6 @@ app.post('/POST/batalhar/pokemonAId/pokemonBId' , function(req,res){
 app.get("/POST/batalhar", function(req, res){
     res.render("batalhar")
 })
-
-
 
 //Servidor
 const PORT = process.env.PORT || 8081
